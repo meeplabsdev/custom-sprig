@@ -7,9 +7,9 @@
 
 enum LED
 {
-    LEFT,
-    RIGHT,
-    BUILTIN,
+    STATUS,
+    NETWORK,
+    PICO,
 };
 
 enum BUTTON
@@ -42,11 +42,11 @@ bool get_button(enum BUTTON button)
 
 void set_led(enum LED led, float power)
 {
-    if (led == LEFT)
+    if (led == STATUS)
     {
         set_led_sided(LED_L, power);
     }
-    else if (led == RIGHT)
+    else if (led == NETWORK)
     {
         set_led_sided(LED_R, power);
     }
