@@ -44,5 +44,5 @@ void init_button(uint button)
 
 bool get_button(uint button)
 {
-    return gpio_get(button) == 0;
+    return !gpio_get(button);
 }
