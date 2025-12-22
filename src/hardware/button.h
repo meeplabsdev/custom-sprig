@@ -2,6 +2,15 @@
 #include <hardware/regs/io_qspi.h>
 #include <hardware/structs/ioqspi.h>
 
+#define BUTTON_W 5
+#define BUTTON_A 6
+#define BUTTON_S 7
+#define BUTTON_D 8
+#define BUTTON_I 12
+#define BUTTON_J 13
+#define BUTTON_K 14
+#define BUTTON_L 15
+
 // https://github.com/raspberrypi/pico-examples/blob/master/picoboard/button/button.c
 bool __no_inline_not_in_flash_func(get_bootsel_button)()
 {
@@ -22,4 +31,18 @@ bool __no_inline_not_in_flash_func(get_bootsel_button)()
 
     restore_interrupts(flags);
     return state;
+}
+
+// W, S, A, D, I, K, J, L
+// uint button_pins[] = {5, 7, 6, 8, 12, 14, 13, 15};
+
+void init_button(uint button)
+{
+    gpio_set_dir(button, GPIO_IN);
+    gpio_pull_up(button);
+}
+
+bool get_button(uint button)
+{
+    return gpio_get(button) == 0;
 }
