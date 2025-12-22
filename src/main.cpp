@@ -7,6 +7,15 @@
 #include "hardware.h"
 
 #define FOREVER while (1)
+static uint16_t RGB(uint8_t r, uint8_t b, uint8_t g)
+{
+    r = (uint8_t)((float)((float)r / 255.0f) * 31.0f);
+    g = (uint8_t)((float)((float)g / 255.0f) * 31.0f);
+    b = (uint8_t)((float)((float)b / 255.0f) * 63.0f);
+
+    // return ((r & 0xf8) << 8) + ((g & 0xfc) << 3) + (b >> 3);
+    return ((r & 0b11111000) << 8) | ((g & 0b11111100) << 3) | (b >> 3);
+}
 
 struct repeating_timer _bootsel_task;
 bool bootsel_task(struct repeating_timer *rt)
@@ -55,5 +64,11 @@ int main()
     add_repeating_timer_ms(100, bootsel_task, NULL, &_bootsel_task);
     add_repeating_timer_ms(10, main_task, NULL, &_main_task);
 
-    FOREVER tight_loop_contents();
+    draw_callback(
+        [](int x, int y)
+        { return RGB(0, x * 255 / 160, y * 255 / 128); },
+        0, 0, 160, 128);
+
+    FOREVER
+    tight_loop_contents();
 }
