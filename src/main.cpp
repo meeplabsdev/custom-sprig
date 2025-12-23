@@ -18,26 +18,26 @@ static uint16_t RGB(uint8_t r, uint8_t b, uint8_t g)
     return ((r & 0b11111000) << 8) | ((g & 0b11111100) << 3) | (b >> 3);
 }
 
-float l_power = 0.0;
-float r_power = 0.0;
-float delta = 0.1;
+int l_power = 0;
+int r_power = 0;
+int delta = 10;
 
 struct repeating_timer _main_task;
 bool main_task(struct repeating_timer *rt)
 {
     Hardware *hardware = (Hardware *)rt->user_data;
-    hardware->status.set_brightness(l_power);
+    // hardware->status.set_brightness(l_power);
     hardware->network.set_brightness(r_power);
 
     if (hardware->leftpad.is_pressed(UP))
-        l_power = std::clamp(l_power + delta, 0.0f, 1.0f);
+        l_power = std::clamp(l_power + delta, 0, 100);
     else if (hardware->leftpad.is_pressed(DOWN))
-        l_power = std::clamp(l_power - delta, 0.0f, 1.0f);
+        l_power = std::clamp(l_power - delta, 0, 100);
 
     if (hardware->rightpad.is_pressed(UP))
-        r_power = std::clamp(r_power + delta, 0.0f, 1.0f);
+        r_power = std::clamp(r_power + delta, 0, 100);
     else if (hardware->rightpad.is_pressed(DOWN))
-        r_power = std::clamp(r_power - delta, 0.0f, 1.0f);
+        r_power = std::clamp(r_power - delta, 0, 100);
 
     return true;
 }
@@ -47,6 +47,9 @@ bool screen_task(struct repeating_timer *rt)
 {
     Hardware *hardware = (Hardware *)rt->user_data;
     hardware->screen.draw();
+    hardware->status.draw();
+    hardware->network.draw();
+    hardware->builtin.draw();
 
     return true;
 }
@@ -78,6 +81,8 @@ int main()
     add_repeating_timer_ms(10, main_task, &hardware, &_main_task);
     add_repeating_timer_ms(50, screen_task, &hardware, &_screen_task);
     add_repeating_timer_ms(100, bootsel_task, &hardware, &_bootsel_task);
+
+    hardware.status.blink();
 
     hardware.screen.fill_callback(
         [](int x, int y)

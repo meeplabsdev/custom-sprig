@@ -16,13 +16,18 @@ class LED
 private:
     LED_TYPE type;
     bool pwm;
-    float value;
+    int value;
+    int target;
 
 public:
     LED();
     LED(LED_TYPE type, bool pwm);
+    void draw();
+    int get_brightness();
     void set_powered(bool powered);
-    void set_brightness(float brightness);
+    void set_brightness(int brightness);
+    void fade_to(int brightness);
+    void blink();
 };
 
 enum BUTTON_TYPE
