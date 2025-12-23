@@ -1,15 +1,6 @@
+#include "../hardware.h"
 #include <hardware/sync.h>
-#include <hardware/regs/io_qspi.h>
 #include <hardware/structs/ioqspi.h>
-
-#define BUTTON_W 5
-#define BUTTON_A 6
-#define BUTTON_S 7
-#define BUTTON_D 8
-#define BUTTON_I 12
-#define BUTTON_J 13
-#define BUTTON_K 14
-#define BUTTON_L 15
 
 // https://github.com/raspberrypi/pico-examples/blob/master/picoboard/button/button.c
 bool __no_inline_not_in_flash_func(get_bootsel_button)()
@@ -33,16 +24,24 @@ bool __no_inline_not_in_flash_func(get_bootsel_button)()
     return state;
 }
 
-// W, S, A, D, I, K, J, L
-// uint button_pins[] = {5, 7, 6, 8, 12, 14, 13, 15};
-
-void init_button(uint button)
+Button::Button() {}
+Button::Button(BUTTON_TYPE type)
 {
-    gpio_set_dir(button, GPIO_IN);
-    gpio_pull_up(button);
+    this->type = type;
+    this->pressed = false;
+
+    if (type == BOOTSEL)
+        return;
+
+    gpio_set_function(type, GPIO_FUNC_SIO);
+    gpio_set_dir(type, GPIO_IN);
+    gpio_pull_up(type);
 }
 
-bool get_button(uint button)
+bool Button::is_pressed()
 {
-    return !gpio_get(button);
+    if (this->type == BOOTSEL)
+        return get_bootsel_button();
+
+    return !gpio_get(this->type);
 }

@@ -231,10 +231,4 @@ void init_screen_tft()
         write_command(ST7735_DISPON);
         sleep_ms(100);
     }
-
-    fill_start();
-    for (int i = 0; i < 160 * 128; i++)
-        fill_send(0);
-    fill_finish();
-    set_backlight(true);
 }

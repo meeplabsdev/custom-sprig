@@ -1,119 +1,100 @@
-#include "hardware/button.h"
-#include "hardware/led.h"
-#include "hardware/screen_tft.h"
 #include <functional>
+#include <cstdint>
 
 #ifndef __HARDWARE__
 #define __HARDWARE__
 
-enum LED
+enum LED_TYPE
 {
-    STATUS,
-    NETWORK,
     PICO,
+    STATUS = 28,
+    NETWORK = 4,
 };
 
-enum BUTTON
+class LED
 {
-    W,
-    S,
-    A,
-    D,
-    I,
-    K,
-    J,
-    L,
+private:
+    LED_TYPE type;
+    bool pwm;
+    float value;
+
+public:
+    LED();
+    LED(LED_TYPE type, bool pwm);
+    void set_powered(bool powered);
+    void set_brightness(float brightness);
+};
+
+enum BUTTON_TYPE
+{
     BOOTSEL,
+    L_UP = 5,
+    L_DOWN = 7,
+    L_LEFT = 6,
+    L_RIGHT = 8,
+    R_UP = 12,
+    R_DOWN = 14,
+    R_LEFT = 13,
+    R_RIGHT = 15,
 };
 
-bool initialized = false;
-bool hardware_init_all()
+class Button
 {
-    init_button(BUTTON_W);
-    init_button(BUTTON_A);
-    init_button(BUTTON_S);
-    init_button(BUTTON_D);
-    init_button(BUTTON_I);
-    init_button(BUTTON_J);
-    init_button(BUTTON_K);
-    init_button(BUTTON_L);
+private:
+    BUTTON_TYPE type;
+    bool pressed;
 
-    init_led_sided(LED_L);
-    init_led_sided(LED_R);
+public:
+    Button();
+    Button(BUTTON_TYPE type);
+    bool is_pressed();
+};
 
-    bool success =
-        init_led_builtin();
-
-    init_screen_tft();
-
-    initialized = true;
-    return success;
-}
-
-bool get_button(enum BUTTON button)
+enum PAD_DIRECTION
 {
-    if (button == W)
-        return get_button(BUTTON_W);
-    else if (button == S)
-        return get_button(BUTTON_S);
-    else if (button == A)
-        return get_button(BUTTON_A);
-    else if (button == D)
-        return get_button(BUTTON_D);
-    else if (button == I)
-        return get_button(BUTTON_I);
-    else if (button == J)
-        return get_button(BUTTON_J);
-    else if (button == K)
-        return get_button(BUTTON_K);
-    else if (button == L)
-        return get_button(BUTTON_L);
-    else
-        return get_bootsel_button();
-}
+    UP = 0,
+    DOWN = 1,
+    LEFT = 2,
+    RIGHT = 3,
+};
 
-void set_led(enum LED led, float power)
+class ButtonPad
 {
-    if (led == STATUS)
-        set_led_sided(LED_L, power);
-    else if (led == NETWORK)
-        set_led_sided(LED_R, power);
-    else
-        set_led_builtin(power);
-}
+private:
+    Button buttons[4];
 
-void draw_pixel(uint16_t colour)
-{
-    fill_start();
-    fill_send(colour);
-    fill_finish();
-}
+public:
+    ButtonPad();
+    ButtonPad(Button up, Button down, Button left, Button right);
+    bool is_pressed(PAD_DIRECTION direction);
+};
 
-void draw_callback(std::function<uint8_t(int, int)> callback, int x0, int y0, int x1, int y1)
+class ScreenTFT
 {
-    fill_start();
-    // left to right, top to bottom
-    for (int x = x0; x < x1; x++)
-    {
-        for (int y = y0; y < y1; y++)
-        {
-            fill_send(callback(x, y));
-        }
-    }
-    fill_finish();
-}
+private:
+    uint16_t screen_buf[160][128]; // [x][y]
 
-void draw_rectangle(uint16_t colour, int x0, int y0, int x1, int y1)
-{
-    draw_callback(
-        [colour](int x, int y)
-        { return colour; },
-        x0, y0, x1, y1);
-}
+public:
+    ScreenTFT();
+    void draw();
+    void fill(uint16_t colour);
+    void fill_callback(std::function<uint16_t(int, int)> callback, int x0, int y0, int x1, int y1);
+};
 
-void draw_screen(uint16_t colour)
+class Hardware
 {
-    draw_rectangle(colour, 0, 0, 160, 128);
-}
+private:
+    bool initialized = false;
+
+public:
+    Hardware();
+    LED status;
+    LED network;
+    LED builtin;
+    Button bootsel;
+    ButtonPad leftpad;
+    ButtonPad rightpad;
+    ScreenTFT screen;
+};
 
 #endif
