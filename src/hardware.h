@@ -1,5 +1,6 @@
 #include <functional>
 #include <cstdint>
+#include <string>
 
 #ifndef __HARDWARE__
 #define __HARDWARE__
@@ -84,6 +85,8 @@ public:
     void draw();
     void fill(uint16_t colour);
     void fill_callback(std::function<uint16_t(int, int)> callback, int x0, int y0, int x1, int y1);
+    void character(uint16_t colour, char character, int x, int y);
+    void text(uint16_t colour, std::string contents, int x, int y);
 };
 
 class Hardware
