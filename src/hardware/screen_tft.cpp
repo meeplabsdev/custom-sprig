@@ -1,7 +1,7 @@
 #include "../hardware.h"
+#include "../font.h"
 #include "screen_tft.h"
 
-#include "../font.cpp"
 #include <string>
 
 ScreenTFT::ScreenTFT()
@@ -22,6 +22,11 @@ void ScreenTFT::draw()
     fill_finish();
 }
 
+void ScreenTFT::pixel(uint16_t colour, int x, int y)
+{
+    this->screen_buf[x][y] = colour;
+}
+
 void ScreenTFT::fill(uint16_t colour)
 {
     std::fill(
@@ -34,7 +39,7 @@ void ScreenTFT::fill_callback(std::function<uint16_t(int, int)> callback, int x0
 {
     for (int x = x0; x < x1; x++)
         for (int y = y0; y < y1; y++)
-            this->screen_buf[x][y] = callback(x, y);
+            pixel(callback(x, y), x, y);
 }
 
 int char_index(char character)
@@ -69,7 +74,7 @@ void ScreenTFT::character(uint16_t colour, char character, int x, int y)
                 if (x0 < 0 || x0 > 160 || y0 < 0 || y0 > 128)
                     continue;
 
-                this->screen_buf[x0][y0] = colour;
+                pixel(colour, x0, y0);
             }
     }
 }
