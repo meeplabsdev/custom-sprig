@@ -124,11 +124,6 @@ static void reset()
     sleep_ms(10);
 }
 
-void set_backlight(bool enabled)
-{
-    gpio_put(BACKLIGHT, enabled);
-}
-
 static void fill_start()
 {
     cs_low();

@@ -8,7 +8,11 @@ ScreenTFT::ScreenTFT()
 {
     fill(0);
     init_screen_tft();
-    set_backlight(true);
+}
+
+void ScreenTFT::set_backlight(bool enabled)
+{
+    gpio_put(BACKLIGHT, enabled);
 }
 
 void ScreenTFT::draw()

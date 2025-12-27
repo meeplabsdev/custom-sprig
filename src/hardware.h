@@ -82,7 +82,9 @@ private:
 
 public:
     ScreenTFT();
+    void set_backlight(bool enabled);
     void draw();
+    void pixel(uint16_t colour, int x, int y);
     void fill(uint16_t colour);
     void fill_callback(std::function<uint16_t(int, int)> callback, int x0, int y0, int x1, int y1);
     void character(uint16_t colour, char character, int x, int y);
