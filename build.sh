@@ -1,7 +1,8 @@
-mkdir build
-cd build
-cmake ..
-make
-cd ..
+mkdir -p build
+cd build || exit 1
 
-cp build/src/firmware.uf2 /run/media/nixos/RPI-RP2/
+cmake .. || { cd ..; exit 1; }
+make || { cd ..; exit 1; }
+
+cd ..
+sudo openocd -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c "adapter speed 5000; program build/src/firmware.elf verify reset exit"
