@@ -44,3 +44,10 @@ build/
 *.pdb
 
 .vscode
+
+# image conversion
+image/*.bin
+image/*.png
+image/*.jpg
+image/*.jpeg
+image/*.webp
