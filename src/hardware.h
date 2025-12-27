@@ -2,6 +2,8 @@
 #include <cstdint>
 #include <string>
 
+#include "ff.h"
+
 #ifndef __HARDWARE__
 #define __HARDWARE__
 
@@ -75,6 +77,20 @@ public:
     bool is_pressed(PAD_DIRECTION direction);
 };
 
+class ExternalSD
+{
+private:
+    bool mounted;
+
+public:
+    ExternalSD();
+    bool is_ready();
+    FRESULT mount();
+    FRESULT unmount();
+    FRESULT write(const char *const path, char *text);
+    FRESULT read(const char *const path, void *buffer, uint64_t offset);
+};
+
 class ScreenTFT
 {
 private:
@@ -104,6 +120,7 @@ public:
     Button bootsel;
     ButtonPad leftpad;
     ButtonPad rightpad;
+    ExternalSD storage;
     ScreenTFT screen;
 };
 

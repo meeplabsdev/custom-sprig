@@ -1,5 +1,6 @@
 #include "hardware/button_pad.cpp"
 #include "hardware/button.cpp"
+#include "hardware/external_sd.cpp"
 #include "hardware/led.cpp"
 #include "hardware/screen_tft.cpp"
 #include "hardware.h"
@@ -28,6 +29,9 @@ Hardware::Hardware()
         Button(R_DOWN),
         Button(R_LEFT),
         Button(R_RIGHT));
+
+    // SD Card
+    this->storage = ExternalSD();
 
     // Screen
     this->screen = ScreenTFT();
