@@ -5,6 +5,8 @@
 #include "hardware/screen_tft.cpp"
 #include "hardware.h"
 
+#include "audio.cpp"
+
 Hardware::Hardware()
 {
     if (this->initialized)
@@ -35,6 +37,9 @@ Hardware::Hardware()
 
     // Screen
     this->screen = ScreenTFT();
+
+    // Audio
+    audio_init();
 
     this->initialized = true;
 }

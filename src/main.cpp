@@ -83,6 +83,7 @@ int main()
         return -1;
     }
 
+    sine(0x800000, 16);
     hardware.screen.fill(RGB(0, 0, 0));
 
     // add_repeating_timer_ms(100, bootsel_task, &hardware, &_bootsel_task);
