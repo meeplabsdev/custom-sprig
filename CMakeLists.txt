@@ -24,17 +24,14 @@ endif()
 
 set(RUST_LIB ${RUST_TARGET_DIR}/${RUST_TARGET}/${RUST_BUILD_MODE}/libopensprig_rs.a)
 
-add_custom_command(
-    OUTPUT ${RUST_LIB}
-    COMMAND ${CMAKE_COMMAND} -E env
-        CARGO_TARGET_DIR=${RUST_TARGET_DIR}
-        cargo build ${RUST_BUILD_FLAG} --target=${RUST_TARGET}
+add_custom_target(rust_build ALL
+    COMMAND ${CMAKE_COMMAND} -E env CARGO_TARGET_DIR=${RUST_TARGET_DIR}
+            cargo build ${RUST_BUILD_FLAG} --target=${RUST_TARGET}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMENT "Performing build step for 'rust'"
     VERBATIM
+    BYPRODUCTS ${RUST_LIB}
 )
-
-add_custom_target(rust_build ALL DEPENDS ${RUST_LIB})
 
 add_library(rust_firmware STATIC IMPORTED GLOBAL)
 add_dependencies(rust_firmware rust_build)
