@@ -3,7 +3,8 @@
 #![cfg(not(test))]
 
 mod bridge;
-use crate::bridge::led_bridge;
+use crate::bridge::button_bridge::*;
+use crate::bridge::led_bridge::*;
 
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
@@ -13,9 +14,12 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 #[unsafe(no_mangle)]
 pub extern "C" fn main() -> ! {
     unsafe {
-        let led: *mut led_bridge::LED = led_bridge::LED_new(led_bridge::LED_TYPE::STATUS, true);
-        led_bridge::LED_set_brightness_bool(led, true);
-    }
+        let led: *mut LED = LED_new(LED_TYPE::STATUS, true);
+        let button: *mut Button = Button_new(BUTTON_TYPE::L_LEFT);
 
-    loop {}
+        loop {
+            let pressed = Button_is_pressed(button);
+            LED_set_brightness_bool(led, pressed);
+        }
+    }
 }
