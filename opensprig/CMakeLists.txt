@@ -1,13 +1,12 @@
 cmake_minimum_required(VERSION 3.13)
 
-add_library(opensprig
+add_library(opensprig STATIC
     src/hardware/button.cpp
     src/hardware/led.cpp
     src/hardware/screen.cpp
     src/hardware/speaker.cpp
     src/hardware/storage.cpp
-    src/ui/widget.cpp
-    src/ui/widgets/label.cpp
+    bridge/led_bridge.cpp
 )
 
 target_compile_definitions(opensprig PRIVATE
@@ -19,6 +18,7 @@ target_compile_definitions(opensprig PRIVATE
 
 target_include_directories(opensprig PRIVATE src/def)
 target_include_directories(opensprig PUBLIC include include/**)
+target_include_directories(opensprig PUBLIC bridge bridge/**)
 
 add_subdirectory(src/fatfs/src build)
 target_link_libraries(opensprig PUBLIC no-OS-FatFS-SD-SDIO-SPI-RPi-Pico)
