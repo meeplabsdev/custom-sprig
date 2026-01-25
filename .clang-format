@@ -1,3 +1,6 @@
 BasedOnStyle: LLVM
 IndentWidth: 2
 InsertNewlineAtEOF: true
+AllowShortFunctionsOnASingleLine: Inline
+IndentExternBlock: Indent
+IndentExportBlock: true
