@@ -1,9 +1,7 @@
 # Build artifacts
 build/
+target/
 
 # Conversion script
 convert/*
 !convert/convert.sh
-
-# Added by cargo
-/target

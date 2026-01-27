@@ -5,7 +5,10 @@ mkdir -p build
 cd build
 
 if [ -z "$1" ]; then
-    cmake ".."
+    cargo build --manifest-path "../examples/firmware/Cargo.toml" --target-dir rust/target --target thumbv6m-none-eabi --release --lib
+    cp "rust/target/thumbv6m-none-eabi/release/libfirmware.a" firmware.a
+
+    OPENSPRIG_APPLICATION=0 cmake ..
     make
 
     sudo openocd \
@@ -16,6 +19,9 @@ else
     mkdir -p "$1"
     cd $1
 
-    cmake "../../examples/$1"
+    cargo build --manifest-path "../../examples/$1/Cargo.toml" --target-dir rust/target --target thumbv6m-none-eabi --release --lib
+    cp "rust/target/thumbv6m-none-eabi/release/lib$1.a" firmware.a
+
+    OPENSPRIG_APPLICATION=1 cmake ../..
     make
 fi
